@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生成应用图标</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        canvas {
+            border: 1px solid #ddd;
+            margin: 20px 0;
+        }
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #2563eb;
+        }
+        .preview {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .icon-preview {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎨 汉字学习助手 - 图标生成器</h1>
+    <p>点击下面的按钮生成并下载应用图标</p>
+
+    <div class="preview">
+        <div class="icon-preview">
+            <p>192x192 图标</p>
+            <canvas id="canvas192" width="192" height="192"></canvas>
+            <br>
+            <button onclick="downloadIcon(192)">下载 192x192</button>
+        </div>
+        <div class="icon-preview">
+            <p>512x512 图标</p>
+            <canvas id="canvas512" width="512" height="512"></canvas>
+            <br>
+            <button onclick="downloadIcon(512)">下载 512x512</button>
+        </div>
+    </div>
+
+    <h3>使用说明：</h3>
+    <ol>
+        <li>点击"下载"按钮保存图标</li>
+        <li>将下载的图标重命名为 <code>icon-192.png</code> 和 <code>icon-512.png</code></li>
+        <li>将图标文件放到 <code>public/</code> 目录</li>
+        <li>重新构建项目</li>
+    </ol>
+
+    <script>
+        function drawIcon(canvas, size) {
+            const ctx = canvas.getContext('2d');
+            
+            // 创建渐变背景
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, '#FCD34D');
+            gradient.addColorStop(1, '#F59E0B');
+            
+            // 绘制圆角矩形背景
+            const radius = size * 0.15;
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.moveTo(radius, 0);
+            ctx.lineTo(size - radius, 0);
+            ctx.quadraticCurveTo(size, 0, size, radius);
+            ctx.lineTo(size, size - radius);
+            ctx.quadraticCurveTo(size, size, size - radius, size);
+            ctx.lineTo(radius, size);
+            ctx.quadraticCurveTo(0, size, 0, size - radius);
+            ctx.lineTo(0, radius);
+            ctx.quadraticCurveTo(0, 0, radius, 0);
+            ctx.closePath();
+            ctx.fill();
+            
+            // 绘制汉字
+            ctx.fillStyle = '#DC2626';
+            ctx.font = `bold ${size * 0.6}px STKaiti, KaiTi, serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('学', size / 2, size / 2 + size * 0.05);
+        }
+
+        function downloadIcon(size) {
+            const canvas = document.getElementById(`canvas${size}`);
+            const link = document.createElement('a');
+            link.download = `icon-${size}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        // 页面加载时绘制图标
+        window.onload = function() {
+            drawIcon(document.getElementById('canvas192'), 192);
+            drawIcon(document.getElementById('canvas512'), 512);
+        };
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>生成 PWA 图标</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #DC2626;
+            margin-bottom: 10px;
+        }
+        .preview {
+            display: flex;
+            gap: 30px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        .icon-box {
+            text-align: center;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+        canvas {
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button {
+            background: linear-gradient(135deg, #DC2626, #B91C1C);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 10px 0;
+            transition: all 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(220, 38, 38, 0.3);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        .download-all {
+            background: linear-gradient(135deg, #3B82F6, #2563EB);
+        }
+        .instructions {
+            background: #FEF3C7;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid #F59E0B;
+        }
+        .instructions h3 {
+            margin-top: 0;
+            color: #92400E;
+        }
+        .instructions ol {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .instructions code {
+            background: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 PWA 图标生成器</h1>
+        <p style="color: #666; font-size: 18px;">为汉字学习助手生成 PWA 应用图标</p>
+
+        <div class="preview">
+            <div class="icon-box">
+                <h3>192x192</h3>
+                <canvas id="canvas192" width="192" height="192"></canvas>
+                <br>
+                <button onclick="downloadIcon(192)">📥 下载 192x192</button>
+            </div>
+
+            <div class="icon-box">
+                <h3>512x512</h3>
+                <canvas id="canvas512" width="512" height="512"></canvas>
+                <br>
+                <button onclick="downloadIcon(512)">📥 下载 512x512</button>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin: 20px 0;">
+            <button class="download-all" onclick="downloadAll()">
+                📦 下载全部图标
+            </button>
+        </div>
+
+        <div class="instructions">
+            <h3>📋 使用说明</h3>
+            <ol>
+                <li>点击上方的"下载"按钮，保存图标文件</li>
+                <li>将下载的文件重命名为：
+                    <ul>
+                        <li><code>icon-192.png</code></li>
+                        <li><code>icon-512.png</code></li>
+                    </ul>
+                </li>
+                <li>将这两个文件移动到项目的 <code>public/</code> 目录</li>
+                <li>重新构建项目：<code>yarn build</code></li>
+                <li>重新部署：<code>yarn deploy</code></li>
+            </ol>
+            <p style="margin-top: 15px; color: #92400E;">
+                💡 <strong>提示</strong>：也可以点击"下载全部图标"一次性下载所有尺寸
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function drawIcon(canvas, size) {
+            const ctx = canvas.getContext('2d');
+            
+            // 创建渐变背景
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, '#FCD34D');
+            gradient.addColorStop(1, '#F59E0B');
+            
+            // 绘制圆角矩形背景
+            const radius = size * 0.15;
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.moveTo(radius, 0);
+            ctx.lineTo(size - radius, 0);
+            ctx.quadraticCurveTo(size, 0, size, radius);
+            ctx.lineTo(size, size - radius);
+            ctx.quadraticCurveTo(size, size, size - radius, size);
+            ctx.lineTo(radius, size);
+            ctx.quadraticCurveTo(0, size, 0, size - radius);
+            ctx.lineTo(0, radius);
+            ctx.quadraticCurveTo(0, 0, radius, 0);
+            ctx.closePath();
+            ctx.fill();
+            
+            // 添加微妙的边框
+            ctx.strokeStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            // 绘制汉字
+            ctx.fillStyle = '#DC2626';
+            ctx.font = `bold ${size * 0.62}px STKaiti, KaiTi, serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('学', size / 2, size / 2 + size * 0.03);
+        }
+
+        function downloadIcon(size) {
+            const canvas = document.getElementById(`canvas${size}`);
+            const link = document.createElement('a');
+            link.download = `icon-${size}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            
+            // 显示提示
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = '✅ 已下载';
+            setTimeout(() => {
+                btn.textContent = originalText;
+            }, 2000);
+        }
+
+        function downloadAll() {
+            setTimeout(() => downloadIcon(192), 100);
+            setTimeout(() => downloadIcon(512), 300);
+            
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = '✅ 全部已下载';
+            setTimeout(() => {
+                btn.textContent = originalText;
+            }, 3000);
+        }
+
+        // 页面加载时绘制图标
+        window.onload = function() {
+            drawIcon(document.getElementById('canvas192'), 192);
+            drawIcon(document.getElementById('canvas512'), 512);
+        };
+    </script>
+</body>
+</html>
+
