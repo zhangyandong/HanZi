@@ -3,10 +3,11 @@ import HanziWriter from 'hanzi-writer'
 
 interface StrokeAnimationProps {
   character: string
+  size?: number
   onStrokeDataLoaded?: (strokeCount: number, medians: any[]) => void
 }
 
-const StrokeAnimation = ({ character, onStrokeDataLoaded }: StrokeAnimationProps) => {
+const StrokeAnimation = ({ character, size, onStrokeDataLoaded }: StrokeAnimationProps) => {
   const containerRef = useRef<HTMLDivElement>(null)
   const writerRef = useRef<any>(null)
 
@@ -15,12 +16,15 @@ const StrokeAnimation = ({ character, onStrokeDataLoaded }: StrokeAnimationProps
 
     // 清除之前的内容
     containerRef.current.innerHTML = ''
+    
+    // 计算尺寸
+    const finalSize = size || Math.min(window.innerWidth * 0.8, 500)
 
     try {
       // 创建HanziWriter实例
       const writer = HanziWriter.create(containerRef.current, character, {
-        width: Math.min(window.innerWidth * 0.8, 500),
-        height: Math.min(window.innerWidth * 0.8, 500),
+        width: finalSize,
+        height: finalSize,
         padding: 20,
         
         // 显示设置
@@ -64,7 +68,7 @@ const StrokeAnimation = ({ character, onStrokeDataLoaded }: StrokeAnimationProps
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 200px;
+            font-size: ${finalSize * 0.8}px;
             font-family: 'STKaiti', 'KaiTi', serif;
           ">
             ${character}
@@ -83,10 +87,13 @@ const StrokeAnimation = ({ character, onStrokeDataLoaded }: StrokeAnimationProps
         }
       }
     }
-  }, [character])
+  }, [character, size])
 
   return (
-    <div className="relative w-full max-w-[500px] aspect-square">
+    <div 
+      className="relative aspect-square"
+      style={{ width: size ? `${size}px` : '100%', maxWidth: size ? 'none' : '500px' }}
+    >
       {/* 田字格背景 */}
       <div className="absolute inset-0 border-4 border-gray-800 rounded-lg overflow-hidden">
         {/* 垂直中线 */}
@@ -122,4 +129,3 @@ const StrokeAnimation = ({ character, onStrokeDataLoaded }: StrokeAnimationProps
 }
 
 export default StrokeAnimation
-

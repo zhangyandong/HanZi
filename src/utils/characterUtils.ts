@@ -1,4 +1,10 @@
 import { pinyin } from 'pinyin-pro'
+import cnchar from 'cnchar'
+import radical from 'cnchar-radical'
+import order from 'cnchar-order'
+
+// 使用插件
+cnchar.use(radical, order)
 
 /**
  * 过滤出字符串中的汉字
@@ -21,76 +27,71 @@ export const getPinyin = (char: string): string => {
 
 /**
  * 获取汉字的部首
- * 这里使用简化版本，实际应用可以使用完整的部首数据库
+ * 使用 cnchar 库获取准确的部首信息
  */
 export const getRadical = (char: string): string => {
-  // 简单的部首映射（可以扩展）
-  const radicalMap: Record<string, string> = {
-    '学': '子',
-    '习': '乙',
-    '小': '小',
-    '大': '大',
-    '人': '人',
-    '天': '大',
-    '地': '土',
-    '日': '日',
-    '月': '月',
-    '水': '水',
-    '火': '火',
-    '木': '木',
-    '金': '金',
-    '土': '土',
-    '山': '山',
-    '石': '石',
-    '田': '田',
-    '目': '目',
-    '口': '口',
-    '手': '手',
-    '心': '心',
-    '门': '门',
-    '马': '马',
-    '鸟': '鸟',
-    '鱼': '鱼',
-    '虫': '虫',
-    '草': '艹',
-    '竹': '竹',
-    '米': '米',
-    '糸': '糸',
-    '言': '言',
-    '贝': '贝',
-    '车': '车',
-    '足': '足',
-    '雨': '雨',
-    '风': '风',
+  try {
+    const radicals = cnchar.radical(char)
+    if (radicals && radicals.length > 0 && radicals[0].radical) {
+      return radicals[0].radical
+    }
+    return '未知'
+  } catch (error) {
+    console.error('获取部首失败:', error)
+    return '未知'
   }
-  
-  return radicalMap[char] || '未知'
+}
+
+export interface StrokeDetail {
+  shape: string
+  name: string
+  letter?: string
+  type?: string
 }
 
 /**
- * 获取笔画名称
+ * 获取汉字的笔画详细信息
+ * 使用 cnchar 库获取详细的笔画顺序名称和形状
  */
-export const getStrokeName = (strokeType: string): string => {
-  const strokeNames: Record<string, string> = {
-    'H': '横',
-    'S': '竖',
-    'P': '撇',
-    'N': '捺',
-    'D': '点',
-    'T': '提',
-    'HZ': '横折',
-    'HG': '横钩',
-    'SG': '竖钩',
-    'ZG': '斜钩',
-    'WG': '弯钩',
-    'HZH': '横折钩',
-    'HZW': '横折弯',
-    'HZWG': '横折弯钩',
-    'SP': '竖撇',
-    'XG': '弯钩',
+export const getStrokeDetails = (char: string): StrokeDetail[] => {
+  try {
+    // 使用 cnchar 获取笔画顺序详情
+    const result = cnchar.stroke(char, 'order', 'detail') as unknown as StrokeDetail[][]
+    
+    if (Array.isArray(result) && result.length > 0) {
+      return result[0]
+    }
+    return []
+  } catch (error) {
+    console.error('获取笔画详情失败:', error)
+    return []
   }
-  
-  return strokeNames[strokeType] || '其他'
+}
+
+/**
+ * 获取汉字的笔画名称列表 (已废弃，建议使用 getStrokeDetails)
+ * 使用 cnchar 库获取详细的笔画顺序名称
+ */
+export const getStrokeNames = (char: string): string[] => {
+  try {
+    const details = getStrokeDetails(char)
+    return details.map(d => d.name)
+  } catch (error) {
+    console.error('获取笔画名称失败:', error)
+    return []
+  }
+}
+
+/**
+ * 获取汉字的笔画数
+ */
+export const getStrokeCount = (char: string): number => {
+  try {
+    return cnchar.stroke(char) as number
+  } catch (error) {
+    console.error('获取笔画数失败:', error)
+    return 0
+  }
 }
 
 /**
@@ -107,4 +108,3 @@ export const limitCharacters = (text: string, maxLength: number = 20): string =>
   const chars = filterChinese(text)
   return chars.slice(0, maxLength).join('')
 }
-

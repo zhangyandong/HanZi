@@ -50,10 +50,38 @@ echo ""
 echo "📁 构建文件位于: dist/"
 echo ""
 echo "🌐 部署选项："
-echo "  1. Vercel:  vercel --prod"
-echo "  2. Netlify: netlify deploy --prod --dir=dist"
-echo "  3. 手动上传 dist 文件夹到服务器"
+echo "  1. PinMe (推荐): pinme upload dist"
+echo "  2. Vercel:      vercel --prod"
+echo "  3. Netlify:     netlify deploy --prod --dir=dist"
+echo "  4. 手动上传 dist 文件夹到服务器"
 echo ""
+
+read -p "请选择部署方式 (1-4): " deploy_choice
+
+case $deploy_choice in
+    1)
+        echo "🚀 正在使用 PinMe 部署..."
+        if ! command -v pinme &> /dev/null; then
+            echo "📦 安装 pinme..."
+            npm install -g pinme
+        fi
+        pinme upload dist
+        ;;
+    2)
+        echo "🚀 正在使用 Vercel 部署..."
+        npx vercel --prod
+        ;;
+    3)
+        echo "🚀 正在使用 Netlify 部署..."
+        npx netlify-cli deploy --prod --dir=dist
+        ;;
+    4)
+        echo "请将 dist 目录下的文件上传到您的服务器"
+        ;;
+    *)
+        echo "❌ 无效的选择"
+        ;;
+esac
 
 # 询问是否预览
 read -p "是否在本地预览构建结果？(y/n) " -n 1 -r

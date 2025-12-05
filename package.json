@@ -7,8 +7,9 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "deploy": "yarn build && npx vercel --prod --yes --name hanzi-learning",
+    "deploy": "yarn build && pinme upload dist",
     "deploy:vercel": "npx vercel --prod --yes --name hanzi-learning",
+    "deploy:pinme": "yarn build && pinme upload dist",
     "deploy:netlify": "yarn build && npx netlify-cli deploy --prod --dir=dist",
     "deploy:preview": "yarn build && yarn preview"
   },

@@ -46,7 +46,17 @@ yarn preview
 
 ## 📦 部署上线
 
-### 方法一：Vercel（推荐）⭐
+### 方法一：PinMe（推荐）⭐
+```bash
+# 安装 PinMe CLI
+npm install -g pinme
+
+# 构建并部署
+yarn build
+pinme upload dist
+```
+
+### 方法二：Vercel
 ```bash
 # 安装 Vercel CLI
 npm install -g vercel
