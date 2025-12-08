@@ -1,65 +1,112 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useCharacterContext } from '../context/CharacterContext'
-import { filterChinese, limitCharacters } from '../utils/characterUtils'
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useCharacterContext } from "../context/CharacterContext";
+import { filterChinese, limitCharacters } from "../utils/characterUtils";
+import RewardDisplay from "../components/RewardDisplay";
+
+// 示例词库
+const examplePool = [
+  "小学生",
+  "天地人",
+  "日月水火",
+  "春夏秋冬",
+  "东西南北",
+  "金木水火土",
+  "上下左右",
+  "一二三四",
+  "风雨雷电",
+  "山川河流",
+  "花鸟鱼虫",
+  "青红黄蓝",
+  "爱国家园",
+  "学习进步",
+  "快乐成长",
+  "阳光雨露",
+  "书本笔墨",
+  "琴棋书画",
+  "诗词歌赋",
+  "江河湖海",
+  "云雾雨雪",
+  "鸟语花香",
+];
+
+// 随机选择示例
+const getRandomExamples = (count: number = 4) => {
+  const shuffled = [...examplePool].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, count);
+};
 
 const InputPage = () => {
-  const navigate = useNavigate()
-  const { setInputText, setCharacters } = useCharacterContext()
-  const [localInput, setLocalInput] = useState('')
-  const [error, setError] = useState('')
-  const [isComposing, setIsComposing] = useState(false) // 输入法组合状态
+  const navigate = useNavigate();
+  const { setInputText, setCharacters, stars, moons, suns } =
+    useCharacterContext();
+  const [localInput, setLocalInput] = useState("");
+  const [error, setError] = useState("");
+  const [isComposing, setIsComposing] = useState(false); // 输入法组合状态
+  const [examples, setExamples] = useState<string[]>(() => getRandomExamples());
 
   const handleSubmit = () => {
     if (!localInput.trim()) {
-      setError('请输入汉字')
-      return
+      setError("请输入汉字");
+      return;
     }
 
-    const chars = filterChinese(localInput)
-    
+    const chars = filterChinese(localInput);
+
     if (chars.length === 0) {
-      setError('请输入有效的汉字')
-      return
+      setError("请输入有效的汉字");
+      return;
     }
 
-    setInputText(localInput)
-    setCharacters(chars)
-    navigate('/list')
-  }
+    setInputText(localInput);
+    setCharacters(chars);
+    navigate("/list");
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    
+    const value = e.target.value;
+
     // 如果正在使用输入法，允许输入任何字符（包括拼音）
     if (isComposing) {
-      setLocalInput(value)
+      setLocalInput(value);
     } else {
       // 输入法结束后，只保留汉字
-      setLocalInput(limitCharacters(value, 20))
+      setLocalInput(limitCharacters(value, 20));
     }
-    setError('')
-  }
+    setError("");
+  };
 
   const handleCompositionStart = () => {
-    setIsComposing(true)
-  }
+    setIsComposing(true);
+  };
 
-  const handleCompositionEnd = (e: React.CompositionEvent<HTMLInputElement>) => {
-    setIsComposing(false)
+  const handleCompositionEnd = (
+    e: React.CompositionEvent<HTMLInputElement>
+  ) => {
+    setIsComposing(false);
     // 组合结束后，立即过滤非汉字
-    const value = e.currentTarget.value
-    setLocalInput(limitCharacters(value, 20))
-  }
+    const value = e.currentTarget.value;
+    setLocalInput(limitCharacters(value, 20));
+  };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !isComposing) {
-      handleSubmit()
+    if (e.key === "Enter" && !isComposing) {
+      handleSubmit();
     }
-  }
+  };
+
+  // 刷新示例
+  const refreshExamples = () => {
+    setExamples(getRandomExamples());
+  };
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center p-6 animate-fadeIn">
+      {/* 奖励显示 - 固定在右上角 */}
+      <div className="fixed top-4 right-4 z-10">
+        <RewardDisplay stars={stars} moons={moons} suns={suns} size="medium" />
+      </div>
+
       {/* 标题 */}
       <div className="mb-12 text-center">
         <h1 className="text-5xl md:text-6xl font-bold text-primary-500 mb-4 font-kaiti">
@@ -76,7 +123,7 @@ const InputPage = () => {
           <label className="block text-2xl md:text-3xl font-semibold text-gray-800 mb-6 text-center">
             请输入要学习的汉字
           </label>
-          
+
           <input
             type="text"
             value={localInput}
@@ -93,7 +140,7 @@ const InputPage = () => {
             maxLength={30}
             autoFocus
           />
-          
+
           <div className="mt-4 text-right text-gray-500 text-lg">
             {filterChinese(localInput).length} / 20 字
           </div>
@@ -121,14 +168,23 @@ const InputPage = () => {
 
         {/* 示例提示 */}
         <div className="mt-8 text-center">
-          <p className="text-gray-600 text-lg mb-3">💡 试试这些：</p>
+          <div className="flex items-center justify-center gap-3 mb-3">
+            <p className="text-gray-600 text-lg">💡 试试这些：</p>
+            <button
+              onClick={refreshExamples}
+              className="text-gray-500 hover:text-primary-500 transition-colors duration-200"
+              title="换一批"
+            >
+              🔄
+            </button>
+          </div>
           <div className="flex flex-wrap justify-center gap-3">
-            {['小学生', '天地人', '日月水火', '春夏秋冬'].map((example) => (
+            {examples.map((example) => (
               <button
                 key={example}
                 onClick={() => {
-                  setLocalInput(example)
-                  setError('')
+                  setLocalInput(example);
+                  setError("");
                 }}
                 className="px-6 py-3 bg-white rounded-xl text-xl font-kaiti
                          text-gray-700 hover:bg-primary-100
@@ -150,8 +206,7 @@ const InputPage = () => {
         📚
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default InputPage
-
+export default InputPage;
