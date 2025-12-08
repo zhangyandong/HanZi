@@ -40,7 +40,7 @@ const CharacterDetail = () => {
     }
 
     setShowReward(true);
-    // 2秒后自动关闭奖励弹窗
+    // 3秒后自动关闭奖励弹窗
     setTimeout(() => {
       setShowReward(false);
     }, 3000);
@@ -289,9 +289,9 @@ const CharacterDetail = () => {
 
       {/* 奖励弹窗 */}
       {showReward && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity">
-          <div className="bg-white rounded-3xl p-8 shadow-2xl transform flex flex-col items-center gap-4 animate-bounce">
-            <div className="text-8xl">🎉</div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-white rounded-3xl p-8 shadow-2xl flex flex-col items-center gap-4 animate-reward">
+            <div className="text-8xl animate-gentle-pulse">🎉</div>
             <h2 className="text-4xl font-bold text-orange-500 font-kaiti">
               {rewardMessage}
             </h2>
