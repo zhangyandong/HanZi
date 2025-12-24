@@ -13,7 +13,6 @@ const NavigationBar = ({ onSubmit, stars, moons, suns }: NavigationBarProps) => 
   const {
     localInput,
     error,
-    isComposing,
     handleInputChange,
     handleCompositionStart,
     handleCompositionEnd,

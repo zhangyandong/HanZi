@@ -1,5 +1,3 @@
-import { getPinyin } from "../utils/characterUtils";
-
 interface CharacterListProps {
   characters: string[];
   currentChar: string;
@@ -23,15 +21,14 @@ const CharacterList = ({
             key={`${c}-${index}`}
             onClick={() => onCharacterClick(c)}
             className={`flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-xl
-                       flex flex-col items-center justify-center transition-all
+                       flex items-center justify-center transition-all
                        ${
                          c === currentChar
                            ? "bg-primary-500 text-white shadow-md transform scale-105"
                            : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                        }`}
           >
-            <span className="text-xs opacity-80">{getPinyin(c)}</span>
-            <span className="text-2xl md:text-3xl font-kaiti font-bold">
+            <span className="text-3xl md:text-5xl font-kaiti font-bold">
               {c}
             </span>
           </button>
