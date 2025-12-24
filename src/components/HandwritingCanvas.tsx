@@ -152,12 +152,6 @@ const HandwritingCanvas = ({
           <span>{showGuide ? "隐藏参考" : "显示参考"}</span>
         </button>
       </div>
-
-      {/* 提示文字 */}
-      <div className="text-center text-gray-600 text-sm max-w-md">
-        <p className="mb-1">💡 在田字格中书写汉字，跟随笔顺练习</p>
-        <p className="text-xs text-gray-500">支持鼠标和触屏操作</p>
-      </div>
     </div>
   );
 };

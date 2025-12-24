@@ -1523,6 +1523,39 @@ chokidar@^3.6.0:
   optionalDependencies:
     fsevents "~2.3.2"
 
+cnchar-order@^3.2.6:
+  version "3.2.6"
+  resolved "https://registry.yarnpkg.com/cnchar-order/-/cnchar-order-3.2.6.tgz#9d5accc89aed898186c8e5a2d9afb13a2302f96c"
+  integrity sha512-xeW1MnQk9GLW9rOvgTtBLl9amyJ0MBKAuXGgbiAwC/n1MRLoxW4ZnjPL+isVsi0rV3QXlbiDQQKAnL6TsJNLhA==
+  dependencies:
+    cnchar-types "^3.2.6"
+
+cnchar-poly@^3.2.6:
+  version "3.2.6"
+  resolved "https://registry.yarnpkg.com/cnchar-poly/-/cnchar-poly-3.2.6.tgz#2b7fbcec65023816d9fd3b64e65b4611445d9119"
+  integrity sha512-CF0WA5S/OTvuY2gBPTgnMPCfte/Hk5od22zK9J3B7VzMZfzdH01Bs0+9xl2xLsObEE6UUg3dvqwDR5ozkFZM7A==
+  dependencies:
+    cnchar-types "^3.2.6"
+
+cnchar-radical@^3.2.6:
+  version "3.2.6"
+  resolved "https://registry.yarnpkg.com/cnchar-radical/-/cnchar-radical-3.2.6.tgz#68731bc9984090902f5f6270f6f519e5ea953871"
+  integrity sha512-c9d9DpYoLe6zlHewrwVgfcBVTeo9LuFT7KBICeIKIxggifBCLoOaYz4jkZuh1dz6j5h9Fz6rOrrA9YnXbUBLDw==
+  dependencies:
+    cnchar-types "^3.2.6"
+
+cnchar-types@^3.2.6:
+  version "3.2.6"
+  resolved "https://registry.yarnpkg.com/cnchar-types/-/cnchar-types-3.2.6.tgz#32fb430e20b5f2298b3e611b40502597764c1170"
+  integrity sha512-LGU2ss7KcsI1Psme73+jffUX0ZDuChr6P9Rj2j8lynJHStklNpoC/+kheKSSUcXQ1u2KNvZt1Shs/5efcihHkg==
+
+cnchar@^3.2.6:
+  version "3.2.6"
+  resolved "https://registry.yarnpkg.com/cnchar/-/cnchar-3.2.6.tgz#a2da9ab3b0cbee163e0f280578e15681c7cb7187"
+  integrity sha512-7Up5ALAkoOTAHlRMN0B7VgrrRsp6+trgFV0M7xSsZ0TwnnBfW68gXClcE9Oz8sTOEu+zqGOZjBhlHNzPIBckDA==
+  dependencies:
+    cnchar-types "^3.2.6"
+
 color-convert@^2.0.1:
   version "2.0.1"
   resolved "https://registry.npmmirror.com/color-convert/-/color-convert-2.0.1.tgz#72d3a68d598c9bdb3af2ad1e84f21d896abd4de3"
@@ -3040,8 +3073,16 @@ stop-iteration-iterator@^1.1.0:
     es-errors "^1.3.0"
     internal-slot "^1.1.0"
 
-"string-width-cjs@npm:string-width@^4.2.0", string-width@^4.1.0:
-  name string-width-cjs
+"string-width-cjs@npm:string-width@^4.2.0":
+  version "4.2.3"
+  resolved "https://registry.npmmirror.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
+  integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
+  dependencies:
+    emoji-regex "^8.0.0"
+    is-fullwidth-code-point "^3.0.0"
+    strip-ansi "^6.0.1"
+
+string-width@^4.1.0:
   version "4.2.3"
   resolved "https://registry.npmmirror.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
   integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
@@ -3119,8 +3160,14 @@ stringify-object@^3.3.0:
     is-obj "^1.0.1"
     is-regexp "^1.0.0"
 
-"strip-ansi-cjs@npm:strip-ansi@^6.0.1", strip-ansi@^6.0.0, strip-ansi@^6.0.1:
-  name strip-ansi-cjs
+"strip-ansi-cjs@npm:strip-ansi@^6.0.1":
+  version "6.0.1"
+  resolved "https://registry.npmmirror.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
+  integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
+  dependencies:
+    ansi-regex "^5.0.1"
+
+strip-ansi@^6.0.0, strip-ansi@^6.0.1:
   version "6.0.1"
   resolved "https://registry.npmmirror.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
   integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==

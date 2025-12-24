@@ -11,8 +11,6 @@ interface CharacterContextType {
   setInputText: (text: string) => void;
   characters: string[];
   setCharacters: (chars: string[]) => void;
-  currentChar: string | null;
-  setCurrentChar: (char: string | null) => void;
   // 奖励系统
   stars: number;
   moons: number;
@@ -57,7 +55,6 @@ export const CharacterProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const [inputText, setInputText] = useState<string>("");
   const [characters, setCharacters] = useState<string[]>([]);
-  const [currentChar, setCurrentChar] = useState<string | null>(null);
 
   // 奖励系统状态
   const [stars, setStars] = useState<number>(0);
@@ -109,8 +106,6 @@ export const CharacterProvider: React.FC<{ children: ReactNode }> = ({
         setInputText,
         characters,
         setCharacters,
-        currentChar,
-        setCurrentChar,
         stars,
         moons,
         suns,
