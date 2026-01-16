@@ -58,7 +58,7 @@ const CharacterContent = ({
   return (
     <div className="flex-1 overflow-y-auto p-3 md:p-4 landscape:h-full landscape:overflow-hidden">
       <div className="min-h-full max-w-7xl mx-auto landscape:h-full">
-        <div className="min-h-full grid grid-cols-1 gap-4 lg:h-full landscape:h-full landscape:grid-cols-[0.9fr_1.1fr] lg:grid-cols-[0.9fr_1.1fr]">
+        <div className="min-h-full grid grid-cols-1 gap-4 landscape:h-full landscape:grid-cols-[0.9fr_1.1fr]">
           {/* 信息栏 */}
           <div className="flex flex-col gap-3 overflow-hidden lg:h-full min-h-0 landscape:h-full landscape:overflow-y-auto">
             {/* 基础信息卡片 */}

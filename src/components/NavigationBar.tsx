@@ -70,7 +70,7 @@ const NavigationBar = ({ onSubmit, stars, moons, suns }: NavigationBarProps) => 
         </div>
         <button
           onClick={handleSubmit}
-          className="h-10 px-10 bg-primary-400 text-white
+          className="h-10 px-14 bg-primary-400 text-white
                    rounded-lg text-lg font-bold hover:bg-primary-500
                    active:scale-95 transition-all shadow-md touch-target whitespace-nowrap
                    flex items-center justify-center"
