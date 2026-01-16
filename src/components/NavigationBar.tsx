@@ -1,6 +1,6 @@
 import RewardDisplay from "./RewardDisplay";
 import { useCharacterInput } from "../hooks/useCharacterInput";
-import { filterChinese } from "../utils/characterUtils";
+import { filterChinese, MAX_CHAR_LIMIT } from "../utils/characterUtils";
 
 interface NavigationBarProps {
   onSubmit: (input: string) => void;
@@ -16,7 +16,7 @@ const NavigationBar = ({ onSubmit, stars, moons, suns }: NavigationBarProps) => 
     handleInputChange,
     handleCompositionStart,
     handleCompositionEnd,
-    handleKeyPress,
+    handleKeyDown,
     handleSubmit,
     handleClearInput,
     handleRandomExample,
@@ -38,19 +38,19 @@ const NavigationBar = ({ onSubmit, stars, moons, suns }: NavigationBarProps) => 
             onChange={handleInputChange}
             onCompositionStart={handleCompositionStart}
             onCompositionEnd={handleCompositionEnd}
-            onKeyPress={handleKeyPress}
+            onKeyDown={handleKeyDown}
             placeholder="输入新汉字..."
             className="w-full h-full text-lg text-left
                      px-3 pr-20 rounded-lg border-2 border-primary-200
                      focus:border-primary-400 focus:outline-none
                      transition-colors duration-200
                      bg-yellow-50"
-            maxLength={30}
+            maxLength={MAX_CHAR_LIMIT}
           />
           {localInput && (
             <>
               <div className="absolute right-12 top-1/2 -translate-y-1/2 text-xs text-gray-500">
-                {filterChinese(localInput).length}/20
+                {filterChinese(localInput).length}/{MAX_CHAR_LIMIT}
               </div>
               <button
                 onClick={handleClearInput}
@@ -61,6 +61,7 @@ const NavigationBar = ({ onSubmit, stars, moons, suns }: NavigationBarProps) => 
                          transition-colors duration-200
                          text-sm font-bold"
                 title="清除"
+                aria-label="清除输入"
               >
                 ×
               </button>
@@ -69,7 +70,7 @@ const NavigationBar = ({ onSubmit, stars, moons, suns }: NavigationBarProps) => 
         </div>
         <button
           onClick={handleSubmit}
-          className="h-10 px-3 bg-primary-400 text-white
+          className="h-10 px-10 bg-primary-400 text-white
                    rounded-lg text-lg font-bold hover:bg-primary-500
                    active:scale-95 transition-all shadow-md touch-target whitespace-nowrap
                    flex items-center justify-center"
@@ -80,11 +81,12 @@ const NavigationBar = ({ onSubmit, stars, moons, suns }: NavigationBarProps) => 
         {/* 示例提示按钮 - 随机输入示例 */}
         <button
           onClick={handleRandomExample}
-          className="h-10 px-3 bg-gray-100 text-gray-700
+          className="h-10 px-0 bg-gray-100 text-gray-700
                    rounded-lg text-sm font-semibold hover:bg-gray-200
                    active:scale-95 transition-all shadow-md touch-target whitespace-nowrap
                    flex items-center justify-center gap-1"
           title="随机示例"
+          aria-label="随机示例"
         >
           💡
         </button>

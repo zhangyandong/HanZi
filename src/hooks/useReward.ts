@@ -2,12 +2,12 @@ import { useState } from "react";
 import { useCharacterContext } from "../context/CharacterContext";
 
 export const useReward = () => {
-  const { stars, moons, suns } = useCharacterContext();
+  const { stars, moons, suns, addStar } = useCharacterContext();
   const [showReward, setShowReward] = useState(false);
   const [rewardMessage, setRewardMessage] = useState<string>("");
 
   const handlePracticeComplete = () => {
-    // 检查是否触发升级（注意：addStar 已经在 HandwritingCanvas 中调用）
+    // 统一奖励更新与提示，避免与 UI 状态不同步
     const nextStars = (stars + 1) % 10;
     const willGetMoon = nextStars === 0;
     const nextMoons = willGetMoon ? (moons + 1) % 10 : moons;
@@ -22,11 +22,14 @@ export const useReward = () => {
       setRewardMessage("⭐️ 太棒了！获得一个星星");
     }
 
+    // 实际更新奖励
+    addStar();
+
     setShowReward(true);
     // 3秒后自动关闭奖励弹窗
     setTimeout(() => {
       setShowReward(false);
-    }, 3000);
+    }, 1500);
   };
 
   return {

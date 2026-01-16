@@ -1,5 +1,9 @@
 import { useState } from "react";
-import { filterChinese, limitCharacters } from "../utils/characterUtils";
+import {
+  filterChinese,
+  limitCharacters,
+  MAX_CHAR_LIMIT,
+} from "../utils/characterUtils";
 import { getRandomExamples } from "../utils/exampleUtils";
 
 export const useCharacterInput = (
@@ -15,7 +19,7 @@ export const useCharacterInput = (
     if (isComposing) {
       setLocalInput(value);
     } else {
-      setLocalInput(limitCharacters(value, 20));
+      setLocalInput(limitCharacters(value, MAX_CHAR_LIMIT));
     }
     setError("");
   };
@@ -29,10 +33,10 @@ export const useCharacterInput = (
   ) => {
     setIsComposing(false);
     const value = e.currentTarget.value;
-    setLocalInput(limitCharacters(value, 20));
+    setLocalInput(limitCharacters(value, MAX_CHAR_LIMIT));
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !isComposing) {
       handleSubmit();
     }
@@ -51,7 +55,8 @@ export const useCharacterInput = (
       return;
     }
 
-    onSubmit(localInput);
+    const filteredInput = chars.join("");
+    onSubmit(filteredInput);
     setLocalInput("");
     setError("");
   };
@@ -76,7 +81,7 @@ export const useCharacterInput = (
     handleInputChange,
     handleCompositionStart,
     handleCompositionEnd,
-    handleKeyPress,
+    handleKeyDown,
     handleSubmit,
     handleClearInput,
     handleRandomExample,

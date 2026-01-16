@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import HanziWriter from 'hanzi-writer'
 
 interface StrokeAnimationProps {
@@ -8,8 +8,35 @@ interface StrokeAnimationProps {
 }
 
 const StrokeAnimation = ({ character, size, onStrokeDataLoaded }: StrokeAnimationProps) => {
+  const wrapperRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const writerRef = useRef<any>(null)
+  const [autoSize, setAutoSize] = useState<number | null>(null)
+
+  useEffect(() => {
+    if (size || !wrapperRef.current) return
+
+    const element = wrapperRef.current
+    const updateSize = () => {
+      const nextSize = Math.floor(
+        Math.min(element.clientWidth, element.clientHeight)
+      )
+      if (nextSize > 0) {
+        setAutoSize(prev => (prev === nextSize ? prev : nextSize))
+      }
+    }
+
+    updateSize()
+
+    const resizeObserver = new ResizeObserver(() => {
+      requestAnimationFrame(updateSize)
+    })
+    resizeObserver.observe(element)
+
+    return () => {
+      resizeObserver.disconnect()
+    }
+  }, [size])
 
   useEffect(() => {
     if (!containerRef.current || !character) return
@@ -18,7 +45,8 @@ const StrokeAnimation = ({ character, size, onStrokeDataLoaded }: StrokeAnimatio
     containerRef.current.innerHTML = ''
     
     // 计算尺寸
-    const finalSize = size || Math.min(window.innerWidth * 0.8, 500)
+    const finalSize = size || autoSize
+    if (!finalSize) return
 
     try {
       // 创建HanziWriter实例
@@ -87,12 +115,13 @@ const StrokeAnimation = ({ character, size, onStrokeDataLoaded }: StrokeAnimatio
         }
       }
     }
-  }, [character, size])
+  }, [character, size, autoSize])
 
   return (
     <div 
       className="relative aspect-square"
       style={{ width: size ? `${size}px` : '100%', maxWidth: size ? 'none' : '500px' }}
+      ref={wrapperRef}
     >
       {/* 田字格背景 */}
       <div className="absolute inset-0 border-4 border-gray-800 rounded-lg overflow-hidden">

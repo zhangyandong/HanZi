@@ -6,7 +6,7 @@ function App() {
   return (
     <CharacterProvider>
       <Router>
-        <div className="w-full h-full overflow-hidden">
+        <div className="w-full h-full overflow-auto">
           <Routes>
             <Route path="/" element={<CharacterDetail />} />
             <Route path="/detail/:char" element={<CharacterDetail />} />

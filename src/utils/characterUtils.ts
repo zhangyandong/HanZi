@@ -216,7 +216,12 @@ export const isChinese = (char: string): boolean => {
 /**
  * 限制输入字数
  */
-export const limitCharacters = (text: string, maxLength: number = 20): string => {
+export const MAX_CHAR_LIMIT = 100
+
+export const limitCharacters = (
+  text: string,
+  maxLength: number = MAX_CHAR_LIMIT
+): string => {
   const chars = filterChinese(text)
   return chars.slice(0, maxLength).join('')
 }

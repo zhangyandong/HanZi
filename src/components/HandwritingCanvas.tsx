@@ -1,6 +1,5 @@
 import { useRef, useEffect, useState } from "react";
 import HanziWriter from "hanzi-writer";
-import { useCharacterContext } from "../context/CharacterContext";
 
 interface HandwritingCanvasProps {
   character: string;
@@ -17,8 +16,11 @@ const HandwritingCanvas = ({
 }: HandwritingCanvasProps) => {
   const writerRef = useRef<HTMLDivElement>(null);
   const writerInstanceRef = useRef<any>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [showGuide, setShowGuide] = useState(showReference);
-  const { addStar } = useCharacterContext();
+  const [writerSize, setWriterSize] = useState<number | null>(
+    propSize ?? null
+  );
 
   // Quiz 配置（抽取为独立函数避免重复）
   const startQuiz = (writer: any) => {
@@ -31,8 +33,6 @@ const HandwritingCanvas = ({
       },
       onComplete: () => {
         console.log("完成！");
-        // 奖励一个星星
-        addStar();
         if (onComplete) {
           setTimeout(() => {
             onComplete();
@@ -41,6 +41,36 @@ const HandwritingCanvas = ({
       },
     });
   };
+
+  // 根据容器尺寸自适应画布大小
+  useEffect(() => {
+    if (propSize) {
+      setWriterSize(propSize);
+      return;
+    }
+    if (!containerRef.current) return;
+
+    const element = containerRef.current;
+    const updateSize = () => {
+      const nextSize = Math.floor(
+        Math.min(element.clientWidth, element.clientHeight)
+      );
+      if (nextSize > 0) {
+        setWriterSize(prev => (prev === nextSize ? prev : nextSize));
+      }
+    };
+
+    updateSize();
+
+    const resizeObserver = new ResizeObserver(() => {
+      requestAnimationFrame(updateSize);
+    });
+    resizeObserver.observe(element);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [propSize]);
 
   // 初始化 HanziWriter（包含手写功能）
   useEffect(() => {
@@ -51,7 +81,8 @@ const HandwritingCanvas = ({
       writerRef.current.innerHTML = "";
     }
 
-    const size = propSize || Math.min(window.innerWidth * 0.9, 500);
+    const size = propSize || writerSize;
+    if (!size) return;
 
     // 创建 HanziWriter 实例，启用手写功能
     const writer = HanziWriter.create(writerRef.current, character, {
@@ -86,7 +117,7 @@ const HandwritingCanvas = ({
         writerInstanceRef.current.cancelQuiz();
       }
     };
-  }, [character, propSize]);
+  }, [character, propSize, writerSize]);
 
   // 清除画布（重新开始）
   const clearCanvas = () => {
@@ -106,32 +137,42 @@ const HandwritingCanvas = ({
     if (writerInstanceRef.current) {
       if (nextShowGuide) {
         writerInstanceRef.current.showOutline();
+        writerInstanceRef.current.showCharacter();
       } else {
         writerInstanceRef.current.hideOutline();
+        writerInstanceRef.current.hideCharacter();
       }
     }
   };
 
   return (
-    <div className="flex flex-col items-center gap-4 w-full">
+    <div className="flex flex-col items-center gap-3 w-full h-full">
       {/* HanziWriter 容器 */}
       <div
-        className="relative border-4 border-gray-800 rounded-lg shadow-xl"
-        style={{
-          width: propSize ? `${propSize}px` : "100%",
-          maxWidth: "500px",
-        }}
+        ref={containerRef}
+        className="flex-1 w-full min-h-[220px] flex items-center justify-center"
       >
+        <div
+          className="relative border-4 border-gray-800 rounded-lg shadow-xl"
+          style={{
+            width: writerSize ? `${writerSize}px` : "100%",
+            height: writerSize ? `${writerSize}px` : "100%",
+            maxWidth: "100%",
+            maxHeight: "100%",
+          }}
+        >
         <div ref={writerRef} className="hanzi-writer-container" />
+        </div>
       </div>
 
       {/* 控制按钮 */}
       <div className="flex flex-wrap justify-center gap-3">
         <button
           onClick={clearCanvas}
-          className="px-6 py-3 bg-red-500 text-white rounded-xl text-lg font-bold
+          className="px-4 py-2 bg-red-500 text-white rounded-xl text-base font-bold
                    hover:bg-red-600 active:scale-95 transition-all shadow-md
-                   flex items-center gap-2 touch-target"
+                   flex items-center gap-2 touch-target
+                   xl:px-6 xl:py-3 xl:text-lg"
         >
           <span>🔄</span>
           <span>重新开始</span>
@@ -139,9 +180,10 @@ const HandwritingCanvas = ({
 
         <button
           onClick={toggleGuide}
-          className={`px-6 py-3 rounded-xl text-lg font-bold
+          className={`px-4 py-2 rounded-xl text-base font-bold
                    active:scale-95 transition-all shadow-md
                    flex items-center gap-2 touch-target
+                   xl:px-6 xl:py-3 xl:text-lg
                    ${
                      showGuide
                        ? "bg-blue-500 text-white hover:bg-blue-600"
